@@ -1,0 +1,14 @@
+import { sb } from '../core/supabase-client.js';
+import { setupAppMenu,setupTheme,setupProfileMenu,loadProfileUI,friendlySupabaseError,showToast,firstLetter } from '../core/app-shared.js';
+const loader=document.getElementById('pageLoader'); const show=()=>loader?.classList.remove('hidden'); const hide=()=>loader?.classList.add('hidden');
+setupAppMenu(); setupTheme();
+const p=await loadProfileUI();
+setupProfileMenu();
+const profile=p.profile||{};
+const nameInput=document.getElementById('fullName'), mobileInput=document.getElementById('mobileNumber'), emailInput=document.getElementById('email'), currency=document.getElementById('currency'), timezone=document.getElementById('timezone');
+nameInput.value=profile.full_name||p.name||''; mobileInput.value=profile.mobile_number||''; emailInput.value=p.email||''; currency.value=profile.currency_code||'INR'; timezone.value=profile.timezone||'Asia/Kolkata';
+document.getElementById('profileDisplayName').textContent=p.name; document.getElementById('profileDisplayEmail').textContent=p.email; document.getElementById('profileAvatar').textContent=firstLetter(p.name);
+async function updateProfile(fields,button,messageId){show();button.disabled=true;try{const {error}=await sb.from('profiles').update(fields).eq('id',p.user.id);if(error)throw error;showToast('Profile updated successfully.','success');const box=document.getElementById(messageId);if(box){box.className='alert success';box.textContent='Saved successfully.';box.classList.remove('hidden');} }catch(e){showToast(friendlySupabaseError(e),'error');}finally{button.disabled=false;hide();}}
+document.getElementById('saveProfile').addEventListener('click',async()=>{const name=nameInput.value.trim();const mobile=mobileInput.value.trim();if(!name){showToast('Please enter your full name.','error');return;}if(!mobile){showToast('Please enter your mobile number.','error');return;}await updateProfile({full_name:name,mobile_number:mobile},document.getElementById('saveProfile'),'profileMessage');document.getElementById('profileDisplayName').textContent=name;document.getElementById('profileAvatar').textContent=firstLetter(name);});
+document.getElementById('savePreferences').addEventListener('click',async()=>await updateProfile({currency_code:currency.value,timezone:timezone.value},document.getElementById('savePreferences'),'profileMessage'));
+document.getElementById('changePassword').addEventListener('click',async()=>{const password=document.getElementById('newPassword').value;if(password.length<8){showToast('Password must be at least 8 characters.','error');return;}show();const b=document.getElementById('changePassword');b.disabled=true;try{const {error}=await sb.auth.updateUser({password});if(error)throw error;document.getElementById('newPassword').value='';showToast('Password changed successfully.','success');}catch(e){showToast(friendlySupabaseError(e),'error');}finally{b.disabled=false;hide();}});

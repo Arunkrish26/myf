@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#08a67a"><title>MyFinance — Dashboard</title>
+  <link rel="stylesheet" href="assets/css/base/global.css"><link rel="stylesheet" href="assets/css/pages/dashboard.css"><link rel="stylesheet" href="assets/css/layout/app-shell.css">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("myfinance-theme") || "light";</script>
+</head>
+<body class="app-shell">
+  <div id="pageLoader" class="page-loader hidden"><div class="spinner"></div><p>Loading your finances…</p></div>
+  <aside class="app-sidebar">
+    <div class="app-brand"><span class="brand-mark small">₹</span><strong>MyFinance</strong></div>
+    <nav class="app-nav" aria-label="Main navigation"><a class="active" href="dashboard.html"><span class="nav-icon">⌂</span><span>Dashboard</span></a>
+      <a href="transactions.html"><span class="nav-icon">↔</span><span>Transactions</span></a>
+      <a href="reports.html"><span class="nav-icon">▥</span><span>Reports</span></a>
+      <a href="analytics.html"><span class="nav-icon">◔</span><span>Analytics</span></a></nav>
+  </aside>
+  <main class="app-main">
+    <header class="app-topbar">
+  <button id="menuToggle" class="icon-button menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+  <a class="top-brand" href="dashboard.html" aria-label="MyFinance dashboard"><span class="brand-mark small">₹</span><strong>MyFinance</strong></a>
+      <!--<div class="app-title"><h1>Welcome, <span data-profile-name>User</span></h1><p>Here is your financial snapshot for this month.</p></div>-->
+      <div class="app-actions">
+        
+        <div class="app-profile-wrap">
+          <button id="profileButton" class="profile-button compact" type="button" aria-expanded="false">
+            <span data-profile-initial class="avatar">U</span><span class="profile-summary"><strong data-profile-name>User</strong><small data-profile-email>—</small></span><span class="chevron">⌄</span>
+          </button>
+          <div id="profileMenu" class="profile-menu hidden">
+  <div class="profile-menu-head"><span data-profile-initial class="avatar large">U</span><div><strong data-profile-name>User</strong><small data-profile-email>—</small></div></div>
+  <button id="themeToggle" class="menu-item theme-menu-item" type="button">🌙 Dark mode</button>
+<button id="myProfileLink" class="menu-item" type="button">My Profile</button>
+  <button id="settingsLink" class="menu-item" type="button">Settings</button>
+  <button id="logoutButton" class="menu-item danger" type="button">Logout</button>
+</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="summary-grid">
+        <article class="metric-card metric-balance">
+            <div class="metric-card-head"><span class="metric-label">Total Balance</span><button id="previousBalanceButton" class="metric-action-btn" type="button">Set balance</button></div>
+            <strong id="totalBalance" class="metric-value">₹0.00</strong>
+            <span id="balanceNote" class="metric-note">After recorded savings allocations</span>
+        </article>
+        <article class="metric-card metric-income"><span class="metric-label">Monthly Income</span><strong id="monthlyIncome" class="metric-value">₹0.00</strong><span class="metric-note">This calendar month</span></article>
+        <article class="metric-card metric-expenses"><span class="metric-label">Monthly Expenses</span><strong id="monthlyExpenses" class="metric-value">₹0.00</strong><span class="metric-note">Needs + Wants</span></article>
+        <article class="metric-card metric-savings"><span class="metric-label">Savings</span><strong id="monthlySavings" class="metric-value">₹0.00</strong><span class="metric-note">Income minus expenses</span></article>
+        <article class="metric-card metric-goal-savings">
+            <span class="metric-label">Goal Savings</span>
+            <strong id="goalSavings" class="metric-value">₹0.00</strong>
+            <span class="metric-note">Total saved across goals</span>
+        </article>
+    </section>
+
+    <!--<section class="dashboard-hero">
+      <div><span class="eyebrow">MONTHLY OVERVIEW</span><h2>Take control of your money.</h2><p>Add your latest transaction in a few seconds.</p></div>
+      
+    </section>-->
+
+    <section class="budget-section">
+      <div class="section-heading"><div><h2>50 / 30 / 20 Progress</h2><p>Track spending against your monthly guide.</p></div><strong id="budgetIncomeLabel" class="metric-note">Income: ₹0.00</strong></div>
+      <div class="budget-grid">
+        <div class="budget-item budget-needs"><div class="budget-top"><strong>Needs · 50%</strong><span id="needsProgressText">0%</span></div><div class="progress"><span id="needsProgress"></span></div></div>
+        <div class="budget-item budget-wants"><div class="budget-top"><strong>Wants · 30%</strong><span id="wantsProgressText">0%</span></div><div class="progress"><span id="wantsProgress"></span></div></div>
+        <div class="budget-item budget-savings"><div class="budget-top"><strong>Savings · 20%</strong><span id="savingsProgressText">0%</span></div><div class="progress"><span id="savingsProgress"></span></div></div>
+      </div>
+      <div id="budgetHelp" class="budget-help">Set monthly income and use Need/Want for expenses. The rule is a guide, not a strict limit.</div>
+    </section>
+
+    <section class="two-column">
+      <div class="panel"><div class="section-heading"><div><h2>Recent Transactions</h2><p>Your latest money activity.</p></div></div><div id="recentTransactions" class="transaction-list"></div></div>
+      <div class="panel"><div class="section-heading"><div><h2>Quick Access</h2><p>Common money tasks.</p></div></div><div class="quick-links-grid"><a class="quick-link-card" href="categories.html"><div><strong>Manage categories</strong><br><span>Create your own categories</span></div><span>→</span></a><a class="quick-link-card" href="vehicles.html"><div><strong>Manage vehicles</strong><br><span>Track vehicle expenses separately</span></div><span>→</span></a><a class="quick-link-card" href="reports.html"><div><strong>View reports</strong><br><span>Review trends and spending</span></div><span>→</span></a><a class="quick-link-card" href="analytics.html"><div><strong>Open analytics</strong><br><span>See charts and spending patterns</span></div><span>→</span></a><a class="quick-link-card" href="calendar.html"><div><strong>Open calendar</strong><br><span>See daily income and spending</span></div><span>→</span></a><a class="quick-link-card" href="why-50-30-20.html"><div><strong>Learn 50/30/20</strong><br><span>Understand the budgeting guide</span></div><span>→</span></a></div></div>
+    </section>
+  </main>
+  <button id="floatingDashboardAdd" class="floating-transaction-add dashboard-floating-add" type="button" aria-label="Add transaction" title="Add transaction">+</button>
+
+  <div id="previousBalanceModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="previousBalanceTitle">
+    <div class="modal previous-balance-modal-card">
+      <div class="modal-head">
+        <div><h3 id="previousBalanceTitle">Previous Balance</h3><p>Optionally carry your leftover balance into this month.</p></div>
+        <button id="previousBalanceClose" class="modal-close" type="button" aria-label="Close">×</button>
+      </div>
+      <div class="modal-content">
+        <div class="form-field"><label for="previousBalanceInput">Previous Balance</label><input id="previousBalanceInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 1000"><p class="hint">Example: ₹1,000 left from last month can be carried forward.</p></div>
+        <div class="modal-actions"><button id="previousBalanceClear" class="btn btn-secondary btn-sm" type="button">Clear</button><button id="previousBalanceSave" class="btn btn-primary btn-sm" type="button">Save Balance</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+  <script type="module" src="assets/js/pages/dashboard.js"></script>
+</body>
+</html>

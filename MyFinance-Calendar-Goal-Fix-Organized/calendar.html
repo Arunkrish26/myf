@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#08a67a">
+  <title>MyFinance — Calendar</title>
+  <link rel="stylesheet" href="assets/css/base/global.css">
+  <link rel="stylesheet" href="assets/css/layout/app-shell.css">
+  <link rel="stylesheet" href="assets/css/pages/calendar.css"><link rel="stylesheet" href="assets/css/pages/reminders.css">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("myfinance-theme") || "light";</script>
+</head>
+<body class="app-shell">
+  <div id="pageLoader" class="page-loader hidden"><div class="spinner"></div><p>Loading your calendar…</p></div>
+  <aside class="app-sidebar">
+    <div class="app-brand"><span class="brand-mark small">₹</span><strong>MyFinance</strong></div>
+    <nav class="app-nav" aria-label="Main navigation">
+      <a href="dashboard.html"><span class="nav-icon">⌂</span><span>Dashboard</span></a>
+      <a href="transactions.html"><span class="nav-icon">↔</span><span>Transactions</span></a>
+      <a href="reports.html"><span class="nav-icon">▥</span><span>Reports</span></a>
+      <a href="analytics.html"><span class="nav-icon">◔</span><span>Analytics</span></a>
+    </nav>
+  </aside>
+
+  <main class="app-main">
+    <header class="app-topbar calendar-topbar">
+  <button id="menuToggle" class="icon-button menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+  <a class="top-brand" href="dashboard.html" aria-label="MyFinance dashboard"><span class="brand-mark small">₹</span><strong>MyFinance</strong></a>
+      
+      <div class="app-actions">
+        
+        <div class="app-profile-wrap">
+          <button id="profileButton" class="profile-button compact" type="button" aria-expanded="false">
+            <span data-profile-initial class="avatar">U</span><span class="profile-summary"><strong data-profile-name>User</strong><small data-profile-email>—</small></span><span class="chevron">⌄</span>
+          </button>
+          <div id="profileMenu" class="profile-menu hidden">
+            <div class="profile-menu-head"><span data-profile-initial class="avatar large">U</span><div><strong data-profile-name>User</strong><small data-profile-email>—</small></div></div>
+            <button id="themeToggle" class="menu-item theme-menu-item" type="button">🌙 Dark mode</button>
+<button id="myProfileLink" class="menu-item" type="button">My Profile</button>
+            <button id="settingsLink" class="menu-item" type="button">Settings</button>
+            <button id="logoutButton" class="menu-item danger" type="button">Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="app-title">
+        <div class="page-kicker">MONEY CALENDAR</div>
+        <h1>Calendar</h1>
+        <p>See your income, expenses and savings by date.</p>
+      </div>
+
+    <section class="calendar-panel panel">
+      <div class="calendar-toolbar">
+        <div class="calendar-month-nav">
+          <button id="prevMonth" class="btn btn-secondary icon-nav-btn" type="button" aria-label="Previous month">‹</button>
+          <div class="calendar-month-title"><h2 id="monthTitle">Month Year</h2><span id="monthSubTitle">0 transactions</span></div>
+          <button id="nextMonth" class="btn btn-secondary icon-nav-btn" type="button" aria-label="Next month">›</button>
+        </div>
+        <div class="calendar-toolbar-actions"><button id="todayButton" class="btn btn-secondary today-btn" type="button">Current Month</button><a class="btn btn-secondary btn-sm" href="reminders.html">🔔 Reminders</a><button id="openEmiButton" class="btn btn-primary btn-sm" type="button">+ Track EMI / Loan</button></div>
+      </div>
+
+      <div class="calendar-summary-grid">
+        <article class="calendar-stat calendar-stat-income"><span>Income</span><strong id="monthIncome">₹0.00</strong></article>
+        <article class="calendar-stat calendar-stat-expense"><span>Expenses</span><strong id="monthExpenses">₹0.00</strong></article>
+        <article class="calendar-stat calendar-stat-savings"><span>Savings</span><strong id="monthSavings">₹0.00</strong></article>
+        <article class="calendar-stat calendar-stat-net"><span>Net after savings</span><strong id="monthNet">₹0.00</strong></article>
+      </div>
+
+      <div class="calendar-legend" aria-label="Calendar legend">
+        <span><i class="legend-dot income"></i>Income</span>
+        <span><i class="legend-dot expense"></i>Expense</span>
+        <span><i class="legend-dot savings"></i>Savings</span>
+        <span><i class="emi-legend-dot"></i>📌 EMI / Loan</span>
+      </div>
+
+      <div class="calendar-weekdays" aria-hidden="true">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+      <div id="calendarGrid" class="calendar-grid" aria-label="Monthly calendar"></div>
+    </section>
+
+    <section class="selected-date-panel panel" id="selectedDatePanel">
+      <div class="section-heading">
+        <div><div class="page-kicker">SELECTED DATE</div><h2 id="selectedDateTitle">Choose a date</h2><p id="selectedDateSummary">Tap a date to see the transactions recorded that day.</p></div>
+        <strong id="selectedDateNet" class="selected-net">₹0.00</strong>
+      </div>
+      <div id="selectedDateTransactions" class="calendar-transactions"></div>
+    </section>
+
+    <section class="panel emi-schedule-panel" id="emiSchedulePanel">
+      <div class="section-heading"><div><div class="page-kicker">PAYMENT SCHEDULE</div><h2>EMI & Loan tracker</h2><p>Monthly due dates appear on this calendar. Scheduled EMIs do not count as expenses until you record the actual payment.</p></div></div>
+      <div id="emiList" class="emi-list"></div>
+    </section>
+
+  </main>
+
+  <div id="emiModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="emiModalTitle">
+    <div class="modal reminder-modal">
+      <div class="modal-head"><div><h3 id="emiModalTitle">Track EMI / Loan</h3><p>Set a monthly schedule from a start date through an end date.</p></div><button id="emiModalClose" class="modal-close" type="button" aria-label="Close">×</button></div>
+      <div class="modal-content">
+        <div id="emiFormError" class="alert error hidden"></div>
+        <form id="emiForm" class="form-grid" novalidate>
+          <div class="form-field"><label for="emiName">EMI / Loan Name</label><input id="emiName" maxlength="120" placeholder="e.g. Car Loan" required></div>
+          <div class="form-field"><label for="emiType">Type</label><select id="emiType"><option value="emi">EMI</option><option value="loan">Loan</option></select></div>
+          <div class="form-field"><label for="emiLender">Lender <span class="optional-label">(Optional)</span></label><input id="emiLender" maxlength="120" placeholder="e.g. HDFC Bank"></div>
+          <div class="form-field"><label for="emiAmount">Monthly Amount</label><input id="emiAmount" type="number" min="1" step="0.01" inputmode="decimal" placeholder="e.g. 12500" required></div>
+          <div class="form-field"><label for="emiStartDate">Start Date</label><input id="emiStartDate" type="date" required></div>
+          <div class="form-field"><label for="emiEndDate">End Date</label><input id="emiEndDate" type="date" required></div>
+          <div class="form-field"><label for="emiDueDay">Monthly Due Day</label><input id="emiDueDay" type="number" min="1" max="31" step="1" inputmode="numeric" placeholder="e.g. 10" required><p class="hint">If a month has fewer days, the due date uses that month's last day.</p></div>
+          <div class="form-field"><label for="emiNotes">Notes <span class="optional-label">(Optional)</span></label><textarea id="emiNotes" maxlength="500" placeholder="Optional loan/EMI notes"></textarea></div>
+          <div class="form-actions full"><button id="emiCancelButton" class="btn btn-secondary btn-sm" type="button">Cancel</button><button id="emiSaveButton" class="btn btn-primary btn-sm" type="submit">Save Schedule</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+  <script type="module" src="assets/js/pages/calendar.js"></script>
+</body>
+</html>

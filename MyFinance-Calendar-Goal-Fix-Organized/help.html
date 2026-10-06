@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Help — MyFinance</title>
+<link rel="stylesheet" href="assets/css/base/global.css">
+<link rel="stylesheet" href="assets/css/pages/info.css">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("myfinance-theme") || "light";</script>
+</head>
+<body class="info-page">
+<header class="info-header">
+  <a class="brand-row" href="index.html"><span class="brand-mark small">₹</span><strong>MyFinance</strong></a>
+  <nav><a class="back-nav top-back" href="dashboard.html">← Dashboard</a></nav>
+</header>
+<main class="info-shell">
+<section class="hero"><span class="eyebrow">MYFINANCE HELP</span><h1>Common questions</h1><p>Quick answers to common MyFinance questions.</p></section>
+<section class="faq-list">
+<details open><summary>What is the 50/30/20 rule?</summary><p>A simple budgeting guide using 50% for Needs, 30% for Wants and 20% for Savings.</p></details>
+<details><summary>Can the same category be both a Need and a Want?</summary><p>Yes. MyFinance classifies the individual transaction. For example, Metro to work can be a Need while Metro to meet a friend can be a Want.</p></details>
+<details><summary>Why do I need to choose Need or Want?</summary><p>A category alone cannot know the purpose of a purchase. Your transaction-level choice makes the budget calculation more accurate.</p></details>
+<details><summary>How are goal contributions handled?</summary><p>A goal contribution increases savings and goal progress without being automatically counted as another expense.</p></details>
+<details><summary>How do goal contributions affect my transactions?</summary><p>Goal contributions are stored separately in goal contributions. They increase goal progress and savings tracking without automatically creating a second expense transaction.</p></details><details><summary>Are categories private?</summary><p>System categories are shared defaults. User-created categories belong only to the logged-in user.</p></details>
+<details><summary>Can I attach a receipt?</summary><p>Yes. Transaction attachments will be stored in a private Supabase Storage bucket.</p></details>
+<details><summary>Are my transactions private?</summary><p>User-owned records are protected with Supabase Row Level Security.</p></details>
+</section>
+</main>
+</body>
+</html>

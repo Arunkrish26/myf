@@ -1,0 +1,150 @@
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#08a67a"><title>MyFinance — Reports</title>
+  <link rel="stylesheet" href="assets/css/base/global.css"><link rel="stylesheet" href="assets/css/layout/app-shell.css"><link rel="stylesheet" href="assets/css/pages/reports.css">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("myfinance-theme") || "light";</script>
+</head>
+<body class="app-shell">
+    <div id="pageLoader" class="page-loader hidden"><div class="spinner"></div><p>Loading your report…</p></div>
+
+    
+
+    <!-- existing report content -->
+
+    <aside class="app-sidebar">
+        <div class="app-brand"><span class="brand-mark small">₹</span><strong>MyFinance</strong></div>
+        <nav class="app-nav" aria-label="Main navigation">
+            <a href="dashboard.html"><span class="nav-icon">⌂</span><span>Dashboard</span></a>
+            <a href="transactions.html"><span class="nav-icon">↔</span><span>Transactions</span></a>
+            <a class="active" href="reports.html"><span class="nav-icon">▥</span><span>Reports</span></a>
+            <a href="analytics.html"><span class="nav-icon">◔</span><span>Analytics</span></a>
+        </nav>
+    </aside>
+
+    <main class="app-main">
+        <header class="app-topbar">
+            <button id="menuToggle" class="icon-button menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+            <a class="top-brand" href="dashboard.html" aria-label="MyFinance dashboard"><span class="brand-mark small">₹</span><strong>MyFinance</strong></a>
+            
+            <div class="app-actions">
+
+                <div class="app-profile-wrap">
+                    <button id="profileButton" class="profile-button compact" type="button" aria-expanded="false">
+                        <span data-profile-initial class="avatar">U</span><span class="profile-summary"><strong data-profile-name>User</strong><small data-profile-email>—</small></span><span class="chevron">⌄</span>
+                    </button>
+                    <div id="profileMenu" class="profile-menu hidden">
+                        <div class="profile-menu-head"><span data-profile-initial class="avatar large">U</span><div><strong data-profile-name>User</strong><small data-profile-email>—</small></div></div>
+                        <button id="themeToggle" class="menu-item theme-menu-item" type="button">🌙 Dark mode</button>
+                        <button id="myProfileLink" class="menu-item" type="button">My Profile</button>
+                        <button id="settingsLink" class="menu-item" type="button">Settings</button>
+                        <button id="logoutButton" class="menu-item danger" type="button">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+    <div class="app-title">
+                <a class="back-nav" href="dashboard.html">← Dashboard</a>
+                <h1>Reports</h1>
+                <p>Understand where your money comes from, where it goes, and what remains.</p>
+            </div>
+        <div id="reportDataContent" class="hidden">
+            <section class="page-panel report-filter-panel">
+                <div class="section-heading">
+                    <div><h2>Report period</h2><p id="periodLabel">This Month</p></div>
+                    <button id="printReport" class="btn btn-secondary btn-sm" style="background:#596b73" type="button">&downarrow; PDF</button>
+                </div>
+                <div class="report-period-control">
+                    <label for="rangeSelect">Select period</label>
+                    <select id="rangeSelect" aria-label="Report date range">
+                        <option value="today">Today</option>
+                        <option value="last-7">Last 7 Days</option>
+                        <option value="last-30">Last 30 Days</option>
+                        <option value="this-week">This Week</option>
+                        <option value="this-month" selected>This Month</option>
+                        <option value="last-month">Last Month</option>
+                        <option value="this-year">This Year</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+                <div id="customRange" class="custom-range hidden">
+                    <div class="form-field"><label for="fromDate">From</label><input id="fromDate" type="date"></div>
+                    <div class="form-field"><label for="toDate">To</label><input id="toDate" type="date"></div>
+                    <button id="applyCustomRange" class="btn btn-primary btn-sm" type="button">Apply</button>
+                </div>
+            </section>
+
+            <section class="report-summary-grid">
+                <article class="report-card report-income"><span>Income</span><strong id="reportIncome">₹0.00</strong><small>Money received in the selected period</small></article>
+                <article class="report-card report-expense"><span>Expenses</span><strong id="reportExpenses">₹0.00</strong><small>Needs + Wants</small></article>
+                <article class="report-card report-savings"><span>Savings</span><strong id="reportSavings">₹0.00</strong><small>Income minus expenses</small></article>
+                <article class="report-card report-net"><span>Net after savings allocations</span><strong id="reportNet">₹0.00</strong><small>Income − expenses − savings − goals</small></article>
+            </section>
+
+            <section class="report-two-col">
+                <article class="panel report-panel">
+                    <div class="section-heading"><div><h2>Needs / Wants / Savings</h2><p>Selected-period spending compared with current-month 50/30/20 guide when applicable.</p></div></div>
+                    <div class="budget-breakdown-grid">
+                        <div class="report-breakdown-item breakdown-needs"><div class="breakdown-head"><strong>Needs</strong><span id="needsAmount">₹0.00</span></div><div class="breakdown-track"><span id="needsBar"></span></div><small id="needsPct">0%</small></div>
+                        <div class="report-breakdown-item breakdown-wants"><div class="breakdown-head"><strong>Wants</strong><span id="wantsAmount">₹0.00</span></div><div class="breakdown-track"><span id="wantsBar"></span></div><small id="wantsPct">0%</small></div>
+                        <div class="report-breakdown-item breakdown-savings"><div class="breakdown-head"><strong>Savings</strong><span id="allocatedSavings">₹0.00</span></div><div class="breakdown-track"><span id="savingsBar"></span></div><small id="savingsPct">0%</small></div>
+                        <div class="report-breakdown-item breakdown-goal"><div class="breakdown-head"><strong>Goal Contribution</strong><span id="goalContributionAmount">₹0.00</span></div><div class="breakdown-track"><span></span></div><small>Included in savings allocation</small></div>
+                    </div>
+                </article>
+            </section>
+
+            <section class="report-two-col">
+                <article class="panel report-panel">
+                    <div class="section-heading"><div><h2>Expense categories</h2><p>Where your spending went.</p></div></div>
+                    <div id="expenseCategories" class="category-report-list"></div>
+                    <div id="emptyExpenseCategories" class="empty-state hidden"><strong>No expenses</strong>No expense transactions were recorded in this period.</div>
+                </article>
+                <article class="panel report-panel">
+                    <div class="section-heading"><div><h2>Income categories</h2><p>Where your income came from.</p></div></div>
+                    <div id="incomeCategories" class="category-report-list"></div>
+                    <div id="emptyIncomeCategories" class="empty-state hidden"><strong>No income</strong>No income transactions were recorded in this period.</div>
+                </article>
+            </section>
+
+            <section class="panel report-panel" style="margin-top:15px">
+                <div class="section-heading"><div><h2>Vehicle expenses</h2><p>Vehicle-linked spending in the selected period.</p></div><strong id="vehicleTotal" class="report-inline-total">₹0.00</strong></div>
+                <div class="data-table-wrap">
+                    <table class="data-table report-table">
+                        <thead><tr><th>Vehicle</th><th>Category</th><th>Date</th><th>Budget</th><th>Amount</th></tr></thead>
+                        <tbody id="vehicleRows"></tbody>
+                    </table>
+                </div>
+                <div id="emptyVehicleExpenses" class="empty-state hidden"><strong>No vehicle expenses</strong>No vehicle-linked expenses were recorded in this period.</div>
+            </section>
+
+            <section class="panel report-panel" style="margin-top:15px">
+                <div class="section-heading"><div><h2>Detailed transactions</h2><p>Printable report table for the selected period.</p></div><strong id="transactionCount" class="report-inline-total">0 transactions</strong></div>
+                <div class="data-table-wrap">
+                    <table class="data-table report-table">
+                        <thead><tr><th>#</th><th>Date</th><th>Type</th><th>Category</th><th>Budget</th><th>Vehicle</th><th>Description</th><th>Amount</th></tr></thead>
+                        <tbody id="reportTransactionRows"></tbody>
+                    </table>
+                </div>
+                <div id="emptyReportTransactions" class="empty-state hidden"><strong>No transactions</strong>No records were found for this period.</div>
+            </section>
+
+            <section class="report-note">
+                <strong>How MyFinance calculates this report</strong>
+                <p>Savings is shown as income minus expenses. Savings transactions and goal contributions are savings allocations and reduce the final net balance. Goal contributions are not counted as expenses. Previous balance is not included in 50/30/20 percentages.</p>
+            </section>
+
+      </div></main>
+    <div id="toastContainer" class="toast-container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/vfs_fonts.js"></script>
+    <script type="module" src="assets/js/pages/reports.js"></script>
+
+
+
+</body>
+</html>

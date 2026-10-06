@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>MyFinance — Goals</title>
+
+    <link rel="stylesheet" href="assets/css/base/global.css">
+    <link rel="stylesheet" href="assets/css/layout/app-shell.css">
+    <link rel="stylesheet" href="assets/css/pages/goals.css">
+
+    <script>
+        document.documentElement.dataset.theme =
+            localStorage.getItem("myfinance-theme") || "light";
+    </script>
+</head>
+
+<body class="app-shell">
+
+    <!-- Page Loader -->
+    <div id="pageLoader" class="page-loader hidden">
+        <div class="spinner"></div>
+        <p>Loading your goals…</p>
+    </div>
+
+
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+
+        <div class="app-brand">
+            <span class="brand-mark small">₹</span>
+            <strong>MyFinance</strong>
+        </div>
+
+        <nav class="app-nav" aria-label="Main navigation">
+
+            <a href="dashboard.html">
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="transactions.html">
+                <span class="nav-icon">↔</span>
+                <span>Transactions</span>
+            </a>
+
+            <a href="reports.html">
+                <span class="nav-icon">▥</span>
+                <span>Reports</span>
+            </a>
+
+            <a href="analytics.html">
+                <span class="nav-icon">◔</span>
+                <span>Analytics</span>
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- Main -->
+    <main class="app-main">
+
+        <!-- Topbar -->
+        <header class="app-topbar">
+
+            <button id="menuToggle"
+                    class="icon-button menu-toggle"
+                    type="button"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false">
+                ☰
+            </button>
+
+            <a class="top-brand"
+               href="dashboard.html"
+               aria-label="MyFinance dashboard">
+
+                <span class="brand-mark small">₹</span>
+                <strong>MyFinance</strong>
+
+            </a>
+
+            
+
+
+            <!-- Profile -->
+            <div class="app-actions">
+
+                <div class="app-profile-wrap">
+
+                    <button id="profileButton"
+                            class="profile-button compact"
+                            type="button"
+                            aria-expanded="false">
+
+                        <span data-profile-initial
+                              class="avatar">
+                            U
+                        </span>
+
+                        <span class="profile-summary">
+
+                            <strong data-profile-name>
+                                User
+                            </strong>
+
+                            <small data-profile-email>
+                                —
+                            </small>
+
+                        </span>
+
+                        <span class="chevron">
+                            ⌄
+                        </span>
+
+                    </button>
+
+
+                    <div id="profileMenu" class="profile-menu hidden">
+
+                        <div class="profile-menu-head">
+
+                            <span data-profile-initial
+                                  class="avatar large">
+                                U
+                            </span>
+
+                            <div>
+
+                                <strong data-profile-name>
+                                    User
+                                </strong>
+
+                                <small data-profile-email>
+                                    —
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <button id="themeToggle"
+                                class="menu-item theme-menu-item"
+                                type="button">
+                            🌙 Dark mode
+                        </button>
+
+                        <button id="myProfileLink"
+                                class="menu-item"
+                                type="button">
+                            My Profile
+                        </button>
+
+                        <button id="settingsLink"
+                                class="menu-item"
+                                type="button">
+                            Settings
+                        </button>
+
+                        <button id="logoutButton"
+                                class="menu-item danger"
+                                type="button">
+                            Logout
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+    <div class="app-title">
+
+                <a class="back-nav" href="dashboard.html">
+                    ← Dashboard
+                </a>
+
+                <h1>Goals</h1>
+
+                <p>
+                    Turn the things you want into clear savings targets.
+                </p>
+
+            </div>
+
+
+        <!-- Create Goal -->
+        <section class="page-panel goal-create-panel">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2 id="goalFormTitle">
+                        Create a Goal
+                    </h2>
+
+                    <p>
+                        Set a target and then add contributions as you save.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="goalFormError"
+                 class="alert error hidden">
+            </div>
+
+            <div id="goalFormSuccess"
+                 class="alert success hidden">
+            </div>
+
+
+            <form id="goalForm"
+                  class="form-grid"
+                  novalidate>
+
+                <div class="form-field">
+
+                    <label for="goalName">
+                        Goal Name
+                    </label>
+
+                    <input id="goalName"
+                           maxlength="100"
+                           placeholder="e.g. Dental braces"
+                           required>
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="targetAmount">
+                        Target Amount
+                    </label>
+
+                    <input id="targetAmount"
+                           type="number"
+                           min="1"
+                           step="0.01"
+                           inputmode="decimal"
+                           placeholder="e.g. 15000"
+                           required>
+
+                    <p class="hint">
+                        Enter a positive target amount.
+                    </p>
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="targetDate">
+                        Target Date
+                    </label>
+
+                    <input id="targetDate"
+                           type="date"
+                           required>
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="goalDescription">
+                        Description
+                    </label>
+
+                    <input id="goalDescription"
+                           maxlength="180"
+                           placeholder="e.g. Save for treatment and appointment fees">
+
+                </div>
+
+
+                <div class="form-actions full">
+
+                    <button id="clearGoalButton"
+                            class="btn btn-secondary btn-sm"
+                            type="button">
+                        Clear
+                    </button>
+
+                    <button id="saveGoalButton"
+                            class="btn btn-primary btn-sm"
+                            type="submit">
+                        Create Goal
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- Goal Summary -->
+        <section class="goal-summary-strip"
+                 aria-label="Goal summary">
+
+
+            <!-- Current Goals -->
+            <article class="goal-summary-card goals-count-card">
+
+                <span>
+                    Current goals
+                </span>
+
+                <strong id="activeGoalCount">
+                    0
+                </strong>
+
+            </article>
+
+
+            <!-- Finished Goals -->
+            <article class="goal-summary-card finished-count-card">
+
+                <span>
+                    Finished goals
+                </span>
+
+                <strong id="finishedGoalCount">
+                    0
+                </strong>
+
+            </article>
+
+
+            <!-- Total Target -->
+            <article class="goal-summary-card total-target-card">
+
+                <span>
+                    Total targets
+                </span>
+
+                <strong id="totalTargetAmount">
+                    ₹0.00
+                </strong>
+
+            </article>
+
+
+            <!-- Total Contributed -->
+            <article class="goal-summary-card total-saved-card">
+
+                <span>
+                    Total contributed
+                </span>
+
+                <strong id="totalSavedAmount">
+                    ₹0.00
+                </strong>
+
+            </article>
+
+
+            <!-- Total Spent -->
+            <article class="goal-summary-card total-spent-card">
+
+                <span>
+                    Total spent
+                </span>
+
+                <strong id="totalSpentAmount">
+                    ₹0.00
+                </strong>
+
+            </article>
+
+
+            <!-- Available -->
+            <article class="goal-summary-card total-available-card">
+
+                <span>
+                    Goal money available
+                </span>
+
+                <strong id="totalAvailableAmount">
+                    ₹0.00
+                </strong>
+
+            </article>
+
+        </section>
+
+
+        <!-- Current Goals -->
+        <section class="goals-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Current Goals
+                    </h2>
+
+                    <p>
+                        Goals you are currently saving toward.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="goalsGrid"
+                 class="goals-grid">
+            </div>
+
+
+            <div id="emptyGoals"
+                 class="empty-state hidden">
+
+                <strong>
+                    No current goals
+                </strong>
+
+                Create your first goal above and start contributing toward it.
+
+            </div>
+
+        </section>
+
+
+        <!-- Finished Goals -->
+        <section id="finishedGoalsSection"
+                 class="goals-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Finished Goals
+                    </h2>
+
+                    <p>
+                        Completed goals are kept here for your financial history.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="finishedGoalsGrid"
+                 class="goals-grid">
+            </div>
+
+
+            <div id="emptyFinishedGoals"
+                 class="empty-state hidden">
+
+                <strong>
+                    No finished goals
+                </strong>
+
+                Completed goals will appear here.
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Contribution Modal -->
+    <div id="goalModal"
+         class="modal-backdrop hidden"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="goalModalTitle">
+
+        <div class="modal goal-modal-card">
+
+            <div class="modal-head">
+
+                <div>
+
+                    <h3 id="goalModalTitle">
+                        Contribute to Goal
+                    </h3>
+
+                    <p id="goalModalSubtitle">
+                        Add money to this goal without creating a duplicate expense.
+                    </p>
+
+                </div>
+
+                <button id="goalModalClose"
+                        class="modal-close"
+                        type="button"
+                        aria-label="Close">
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="modal-content">
+
+                <div class="goal-contribution-context">
+
+                    <span id="contributionGoalName">
+                        Goal
+                    </span>
+
+                    <strong id="contributionRemaining">
+                        Remaining ₹0.00
+                    </strong>
+
+                </div>
+
+
+                <div id="contributionError"
+                     class="alert error hidden">
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="contributionAmount">
+                        Contribution Amount
+                    </label>
+
+                    <input id="contributionAmount"
+                           type="number"
+                           min="1"
+                           step="0.01"
+                           inputmode="decimal"
+                           placeholder="e.g. 1000">
+
+                    <p class="hint">
+                        This is saved in goal contributions and does not create a second expense.
+                    </p>
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="contributionDate">
+                        Date
+                    </label>
+
+                    <input id="contributionDate"
+                           type="date">
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="contributionNote">
+                        Note
+                    </label>
+
+                    <textarea id="contributionNote"
+                              maxlength="500"
+                              placeholder="Optional note about this contribution">
+          </textarea>
+
+                </div>
+
+
+                <div class="modal-actions">
+
+                    <button id="contributionCancel"
+                            class="btn btn-secondary btn-sm"
+                            type="button">
+                        Cancel
+                    </button>
+
+                    <button id="contributionSave"
+                            class="btn btn-primary btn-sm"
+                            type="button">
+                        Save Contribution
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Contribution History Modal -->
+    <div id="historyModal"
+         class="modal-backdrop hidden"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="historyModalTitle">
+
+        <div class="modal goal-history-modal-card">
+
+            <div class="modal-head">
+
+                <div>
+
+                    <h3 id="historyModalTitle">
+                        Contribution History
+                    </h3>
+
+                    <p id="historyModalSubtitle">
+                        Your saved contributions for this goal.
+                    </p>
+
+                </div>
+
+                <button id="historyModalClose"
+                        class="modal-close"
+                        type="button"
+                        aria-label="Close">
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="modal-content">
+
+                <div id="contributionHistoryList"
+                     class="contribution-history-list">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Toast -->
+    <div id="toastContainer"
+         class="toast-container">
+    </div>
+
+
+    <!-- JavaScript -->
+    <script type="module"
+            src="assets/js/pages/goals.js">
+    </script>
+
+</body>
+</html>

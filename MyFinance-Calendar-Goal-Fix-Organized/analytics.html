@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#08a67a"><title>MyFinance — Analytics</title>
+  <link rel="stylesheet" href="assets/css/base/global.css"><link rel="stylesheet" href="assets/css/layout/app-shell.css"><link rel="stylesheet" href="assets/css/pages/analytics.css">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("myfinance-theme") || "light";</script>
+</head>
+<body class="app-shell">
+  <div id="pageLoader" class="page-loader hidden"><div class="spinner"></div><p>Loading your analytics…</p></div>
+  <aside class="app-sidebar">
+    <div class="app-brand"><span class="brand-mark small">₹</span><strong>MyFinance</strong></div>
+    <nav class="app-nav" aria-label="Main navigation"><a href="dashboard.html"><span class="nav-icon">⌂</span><span>Dashboard</span></a>
+      <a href="transactions.html"><span class="nav-icon">↔</span><span>Transactions</span></a>
+      <a href="reports.html"><span class="nav-icon">▥</span><span>Reports</span></a>
+      <a class="active" href="analytics.html"><span class="nav-icon">◔</span><span>Analytics</span></a></nav>
+  </aside>
+
+  <main class="app-main">
+    <header class="app-topbar">
+  <button id="menuToggle" class="icon-button menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+  <a class="top-brand" href="dashboard.html" aria-label="MyFinance dashboard"><span class="brand-mark small">₹</span><strong>MyFinance</strong></a>
+      
+      <div class="app-actions">
+        
+        <div class="app-profile-wrap">
+          <button id="profileButton" class="profile-button compact" type="button" aria-expanded="false">
+            <span data-profile-initial class="avatar">U</span><span class="profile-summary"><strong data-profile-name>User</strong><small data-profile-email>—</small></span><span class="chevron">⌄</span>
+          </button>
+          <div id="profileMenu" class="profile-menu hidden">
+  <div class="profile-menu-head"><span data-profile-initial class="avatar large">U</span><div><strong data-profile-name>User</strong><small data-profile-email>—</small></div></div>
+  <button id="themeToggle" class="menu-item theme-menu-item" type="button">🌙 Dark mode</button>
+<button id="myProfileLink" class="menu-item" type="button">My Profile</button>
+  <button id="settingsLink" class="menu-item" type="button">Settings</button>
+  <button id="logoutButton" class="menu-item danger" type="button">Logout</button>
+</div>
+        </div>
+      </div>
+    </header>
+    <div class="app-title">
+        <a class="back-nav" href="dashboard.html">← Dashboard</a>
+        <h1>Analytics</h1>
+        <p>See the patterns behind your income, spending and savings.</p>
+      </div>
+
+    <section class="page-panel analytics-filter-panel">
+      <div class="section-heading">
+        <div><h2>Analysis period</h2><p id="periodLabel">Today</p></div>
+        <a class="btn btn-secondary btn-sm" href="reports.html">Open full report</a>
+      </div>
+      <div class="analytics-period-control">
+        <label for="rangeSelect">Select period</label>
+        <select id="rangeSelect" aria-label="Analytics date range">
+          <option value="today">Today</option>
+          <option value="last-7">Last 7 Days</option>
+          <option value="last-30">Last 30 Days</option>
+          <option value="this-week">This Week</option>
+          <option value="this-month">This Month</option>
+          <option value="last-month">Last Month</option>
+          <option value="this-year">This Year</option>
+          <option value="custom">Custom Range</option>
+        </select>
+      </div>
+      <div id="customRange" class="analytics-custom-range hidden">
+        <div class="form-field"><label for="fromDate">From</label><input id="fromDate" type="date"></div>
+        <div class="form-field"><label for="toDate">To</label><input id="toDate" type="date"></div>
+        <button id="applyCustomRange" class="btn btn-primary btn-sm" type="button">Apply</button>
+      </div>
+    </section>
+
+    <section class="analytics-summary-grid">
+      <article class="analytics-stat analytics-stat-income"><span>Income</span><strong id="statIncome">₹0.00</strong><small>Money received</small></article>
+      <article class="analytics-stat analytics-stat-expense"><span>Expenses</span><strong id="statExpense">₹0.00</strong><small>Needs + Wants</small></article>
+      <article class="analytics-stat analytics-stat-savings"><span>Savings</span><strong id="statSavings">₹0.00</strong><small>Saved / allocated</small></article>
+      <article class="analytics-stat analytics-stat-net"><span>Net</span><strong id="statNet">₹0.00</strong><small>Income − expenses − savings</small></article>
+    </section>
+
+    <section class="analytics-grid analytics-grid-top">
+      <article class="panel analytics-card chart-card">
+        <div class="section-heading"><div><h2>Where your expenses go</h2><p>Category share for the selected period.</p></div></div>
+        <div class="chart-wrap chart-doughnut"><canvas id="expenseChart"></canvas><div id="expenseChartCenter" class="chart-center"><strong>₹0</strong><span>Expenses</span></div></div>
+        <div id="expenseLegend" class="analytics-legend"></div>
+      </article>
+
+      <article class="panel analytics-card chart-card">
+        <div class="section-heading"><div><h2>Where your income comes from</h2><p>Income source share for the selected period.</p></div></div>
+        <div class="chart-wrap chart-doughnut"><canvas id="incomeChart"></canvas><div id="incomeChartCenter" class="chart-center"><strong>₹0</strong><span>Income</span></div></div>
+        <div id="incomeLegend" class="analytics-legend"></div>
+      </article>
+    </section>
+
+    <section class="analytics-grid analytics-grid-bottom">
+      <article class="panel analytics-card chart-card chart-wide">
+        <div class="section-heading"><div><h2>Needs vs Wants vs Savings</h2><p>How the selected period is being allocated.</p></div></div>
+        <div class="chart-wrap chart-bar"><canvas id="budgetChart"></canvas></div>
+      </article>
+
+      <article class="panel analytics-card chart-card chart-wide">
+        <div class="section-heading"><div><h2>Money flow by month</h2><p>Income, expenses and savings allocations.</p></div></div>
+        <div class="chart-wrap chart-bar"><canvas id="trendChart"></canvas></div>
+      </article>
+    </section>
+
+    <section class="analytics-insight-grid">
+      <article class="analytics-insight insight-needs"><span>Needs</span><strong id="insightNeeds">0%</strong><small>of selected income</small></article>
+      <article class="analytics-insight insight-wants"><span>Wants</span><strong id="insightWants">0%</strong><small>of selected income</small></article>
+      <article class="analytics-insight insight-savings"><span>Savings</span><strong id="insightSavings">0%</strong><small>of selected income</small></article>
+      <article class="analytics-insight insight-note"><strong>Tip</strong><small id="insightText">Analytics are a guide to help you spot patterns; previous balance is not included in these percentages.</small></article>
+    </section>
+  </main>
+  <div id="toastContainer" class="toast-container"></div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+  <script type="module" src="assets/js/pages/analytics.js"></script>
+</body>
+</html>

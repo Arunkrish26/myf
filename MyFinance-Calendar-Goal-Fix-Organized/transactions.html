@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MyFinance — Transactions</title><link rel="stylesheet" href="assets/css/base/global.css"><link rel="stylesheet" href="assets/css/layout/app-shell.css">  <script>document.documentElement.dataset.theme = localStorage.getItem("myfinance-theme") || "light";</script>
+</head>
+<body class="app-shell">
+<div id="pageLoader" class="page-loader hidden"><div class="spinner"></div><p>Loading transactions…</p></div>
+<aside class="app-sidebar"><div class="app-brand"><span class="brand-mark small">₹</span><strong>MyFinance</strong></div><nav class="app-nav" aria-label="Main navigation"><a href="dashboard.html"><span class="nav-icon">⌂</span><span>Dashboard</span></a>
+      <a class="active" href="transactions.html"><span class="nav-icon">↔</span><span>Transactions</span></a>
+      <a href="reports.html"><span class="nav-icon">▥</span><span>Reports</span></a>
+      <a href="analytics.html"><span class="nav-icon">◔</span><span>Analytics</span></a></nav></aside>
+<main class="app-main">
+<header class="app-topbar">
+  <button id="menuToggle" class="icon-button menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+  <a class="top-brand" href="dashboard.html" aria-label="MyFinance dashboard"><span class="brand-mark small">₹</span><strong>MyFinance</strong></a><div class="app-actions"><div class="app-profile-wrap"><button id="profileButton" class="profile-button compact" type="button" aria-expanded="false"><span data-profile-initial class="avatar">U</span><span class="profile-summary"><strong data-profile-name>User</strong><small data-profile-email>—</small></span><span class="chevron">⌄</span></button><div id="profileMenu" class="profile-menu hidden"><div class="profile-menu-head"><span data-profile-initial class="avatar large">U</span><div><strong data-profile-name>User</strong><small data-profile-email>—</small></div></div><button id="themeToggle" class="menu-item theme-menu-item" type="button">🌙 Dark mode</button>
+<button id="myProfileLink" class="menu-item" type="button">My Profile</button><button id="settingsLink" class="menu-item" type="button">Settings</button><button id="logoutButton" class="menu-item danger" type="button">Logout</button></div></div></div></header>
+    <div class="app-title"><a class="back-nav" href="dashboard.html">← Dashboard</a><h1>Transactions</h1><p>Add a new transaction. Choose Expense, Income or Savings.</p></div>
+<section class="page-panel form-panel"><div class="section-heading"><div><h2 id="formTitle">Add Transaction</h2>
+    <!--<p>Record one transaction only. Savings do not count as an expense.</p>-->
+       </div></div>
+<div id="formError" class="alert error hidden"></div><div id="formSuccess" class="alert success hidden"></div>
+<form id="transactionForm" class="form-grid" novalidate>
+<div class="form-field full"><label>Transaction Type</label>
+    <div class="radio-row">
+    <label class="radio-option expense-option flex"><input type="radio" name="transactionType" value="expense" checked> Expense</label>
+    <label class="radio-option income-option flex"><input type="radio" name="transactionType" value="income"> Income</label>
+    <label class="radio-option savings-option flex"><input type="radio" name="transactionType" value="savings"> Savings</label>
+    </div>
+    </div>
+<div class="form-field"><label for="amount">Amount</label><input id="amount" type="number" min="1" step="0.01" inputmode="decimal" placeholder="e.g. 500" required><p class="hint">Enter a positive amount only.</p></div>
+<div class="form-field"><label for="category">Category</label><select id="category" required><option value="">Select category</option></select></div>
+
+<div id="budgetTypeField" class="form-field"><label>Expense Type</label><div class="radio-row"><label class="radio-option"><input type="radio" name="budgetType" value="needs" checked> Need</label><label class="radio-option"><input type="radio" name="budgetType" value="wants"> Want</label></div></div>
+    <!--new line added--> 
+
+    <div id="goalField" class="form-field conditional-hidden">
+  <label for="goal">Use Goal Money <span class="optional-label">(Optional)</span></label>
+  <select id="goal">
+    <option value="">Normal expense — not from a goal</option>
+  </select>
+  <p class="hint">Select a goal only if this expense is paid using goal savings.</p>
+</div>
+
+     <!--new line ended--> 
+
+
+
+
+
+<div id="vehicleField" class="form-field conditional-hidden"><label for="vehicle">Vehicle 
+    <!--<span class="optional-label">(Optional)</span>-->
+       </label><select id="vehicle"><option value="">No vehicle</option></select><p class="hint">Link this expense to a vehicle for vehicle reports.</p></div><div class="form-field"><label for="transactionDate">Date</label><input id="transactionDate" type="date" required></div>
+<div class="form-field"><label for="description">Description</label><input id="description" maxlength="150" placeholder="e.g. Office lunch"></div>
+<div class="form-field full"><label for="notes">Notes</label><textarea id="notes" maxlength="1000" placeholder="Optional notes about this transaction"></textarea></div>
+<div class="form-field full attachment-field">
+  <label for="attachment">Attachment
+    <!--<span class="optional-label">(Optional)</span>-->
+    </label>
+  <div class="attachment-picker">
+    <input id="attachment" class="attachment-input" type="file" accept="image/*,application/pdf">
+    <div id="attachmentPreview" class="attachment-preview hidden">
+      <div class="attachment-file-info"><span class="attachment-icon">📎</span><div><strong id="attachmentName">—</strong><small id="attachmentMeta">—</small></div></div>
+      <button id="attachmentRemove" class="row-action danger" type="button">Remove</button>
+    </div>
+  </div>
+  <p class="hint">Receipt, invoice or screenshot. Maximum 10 MB.</p>
+  <div id="attachmentError" class="field-error hidden"></div>
+</div>
+<div class="form-actions full"><button id="clearButton" class="btn btn-secondary btn-sm" type="button">Clear</button><button id="saveButton" class="btn btn-primary btn-sm" type="submit">Save Transaction</button></div>
+</form></section>
+
+<section class="page-panel transaction-history-panel">
+  <div class="section-heading history-heading">
+    <div><h2>Transaction History</h2><p>View, search, edit or delete your recorded transactions.</p></div>
+  </div>
+  <div class="page-toolbar history-toolbar">
+    <div class="toolbar-left">
+      <input id="searchInput" class="search-input" type="search" placeholder="Search transactions">
+    </div>
+    <div class="toolbar-right">
+        <select id="typeFilter" class="filter-select" aria-label="Filter transaction type">
+            <option value="all">All types</option>
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+            <option value="savings">Savings</option>
+            <option value="goal_contribution">Goal Contribution</option>
+        </select>
+    </div>
+  </div>
+  <div class="data-table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr><th>Date</th><th>Type</th><th>Category</th><th>Budget</th><th>Description</th><th>Amount</th><th>Attachment</th><th>Actions</th></tr>
+      </thead>
+      <tbody id="transactionRows"></tbody>
+    </table>
+  </div>
+  <div id="emptyTransactions" class="empty-state hidden"><strong>No matching transactions</strong>Try another search or filter.</div>
+</section>
+
+</main><div id="toastContainer" class="toast-container"></div><script type="module" src="assets/js/pages/transactions.js"></script></body></html>

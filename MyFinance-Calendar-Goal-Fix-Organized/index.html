@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#08a67a">
+  <title>MyFinance — Login</title>
+  <link rel="stylesheet" href="assets/css/base/global.css">
+  <link rel="stylesheet" href="assets/css/pages/auth.css">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("myfinance-theme") || "light";</script>
+</head>
+<body class="auth-page">
+  <div id="pageLoader" class="page-loader hidden" aria-live="polite">
+    <div class="spinner"></div>
+    <p id="loaderText">Checking your account…</p>
+  </div>
+
+  <main class="auth-layout">
+    <section class="auth-card">
+      <div class="brand">
+        <div class="brand-mark">₹</div>
+        <h1>MyFinance</h1>
+        <p>Know where your money goes.</p>
+      </div>
+
+      <div id="authError" class="alert error hidden" role="alert"></div>
+      <div id="authSuccess" class="alert success hidden" role="status"></div>
+
+      <form id="loginForm" novalidate>
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="email"
+               placeholder="you@example.com" required>
+
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password"
+               placeholder="Your password" required>
+
+        <div class="forgot-row">
+          <a href="forgot-password.html">Forgot password?</a>
+        </div>
+
+        <button id="loginButton" class="btn btn-primary" type="submit">
+          Login
+        </button>
+      </form>
+
+      <div class="divider"><span>or</span></div>
+
+      <button id="googleButton" class="btn btn-google" type="button">
+        <span class="google-g">G</span>
+        Continue with Google
+      </button>
+
+      <div class="auth-links">
+        <a href="why-50-30-20.html">Why 50/30/20?</a>
+        <a href="help.html">Help</a>
+      </div>
+
+      <div class="auth-footer">
+        <span>Don't have an account?</span>
+        <a href="register.html">Create account</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="assets/js/pages/auth.js"></script>
+</body>
+</html>
