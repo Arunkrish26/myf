@@ -562,15 +562,149 @@ async function fetchMonthTransactions(userId) {
    10 RECORDS AT A TIME
    ========================================================= */
 
+// async function fetchRecent(userId, offset = 0) {
+
+//     // ============================================
+//     // 1. Fetch normal transactions
+//     // ============================================
+//     const { data: transactions, error: transactionError } = await sb
+//         .from("transactions")
+//         .select(
+//             "id, transaction_type, amount, transaction_date, description, budget_type, categories(name)"
+//         )
+//         .eq("user_id", userId);
+
+//     if (transactionError) throw transactionError;
+
+
+//     // ============================================
+//     // 2. Fetch goal contributions
+//     // ============================================
+//     const { data: contributions, error: contributionError } = await sb
+//         .from("goal_contributions")
+//         .select(
+//             "id, goal_id, amount, contribution_date, note"
+//         )
+//         .eq("user_id", userId);
+
+//     if (contributionError) throw contributionError;
+
+
+//     // ============================================
+//     // 3. Get goal names
+//     // ============================================
+//     const goalIds = [
+//         ...new Set(
+//             (contributions || [])
+//                 .map(x => x.goal_id)
+//                 .filter(Boolean)
+//         )
+//     ];
+
+//     let goals = [];
+
+//     if (goalIds.length > 0) {
+
+//         const { data: goalData, error: goalError } = await sb
+//             .from("goals")
+//             .select("id, name")
+//             .in("id", goalIds);
+
+//         if (goalError) throw goalError;
+
+//         goals = goalData || [];
+//     }
+
+
+//     // ============================================
+//     // 4. Convert normal transactions
+//     // ============================================
+//     const transactionRows = (transactions || []).map(row => ({
+//         ...row,
+//         activity_type: "transaction",
+//         activity_date: row.transaction_date
+//     }));
+
+
+//     // ============================================
+//     // 5. Convert goal contributions
+//     // ============================================
+//     const contributionRows = (contributions || []).map(row => {
+
+//         const goal = goals.find(
+//             g => String(g.id) === String(row.goal_id)
+//         );
+
+//         return {
+//             ...row,
+//             activity_type: "goal_contribution",
+//             transaction_type: "goal_contribution",
+//             activity_date: row.contribution_date,
+//             goal_name: goal?.name || "Unknown Goal",
+//             categories: null
+//         };
+//     });
+
+
+//     // ============================================
+//     // 6. Combine both
+//     // ============================================
+//     const allRows = [
+//         ...transactionRows,
+//         ...contributionRows
+//     ];
+
+
+//     // ============================================
+//     // 7. Sort newest first
+//     // ============================================
+//     allRows.sort((a, b) => {
+
+//         const dateA =
+//             new Date(a.activity_date).getTime();
+
+//         const dateB =
+//             new Date(b.activity_date).getTime();
+
+//         return dateB - dateA;
+//     });
+
+
+//     // ============================================
+//     // 8. Pagination
+//     // ============================================
+//     const result = allRows.slice(
+//         offset,
+//         offset + recentState.pageSize + 1
+//     );
+
+
+//     const hasMore =
+//         result.length > recentState.pageSize;
+
+
+//     return {
+//         rows: result.slice(
+//             0,
+//             recentState.pageSize
+//         ),
+//         hasMore
+//     };
+// }
+
 async function fetchRecent(userId, offset = 0) {
 
     // ============================================
     // 1. Fetch normal transactions
     // ============================================
-    const { data: transactions, error: transactionError } = await sb
+
+    const {
+        data: transactions,
+        error: transactionError
+    } = await sb
         .from("transactions")
         .select(
-            "id, transaction_type, amount, transaction_date, description, budget_type, categories(name)"
+            "id, transaction_type, amount, transaction_date, created_at, description, budget_type, categories(name)"
         )
         .eq("user_id", userId);
 
@@ -580,10 +714,14 @@ async function fetchRecent(userId, offset = 0) {
     // ============================================
     // 2. Fetch goal contributions
     // ============================================
-    const { data: contributions, error: contributionError } = await sb
+
+    const {
+        data: contributions,
+        error: contributionError
+    } = await sb
         .from("goal_contributions")
         .select(
-            "id, goal_id, amount, contribution_date, note"
+            "id, goal_id, amount, contribution_date, created_at, note"
         )
         .eq("user_id", userId);
 
@@ -593,6 +731,7 @@ async function fetchRecent(userId, offset = 0) {
     // ============================================
     // 3. Get goal names
     // ============================================
+
     const goalIds = [
         ...new Set(
             (contributions || [])
@@ -605,7 +744,10 @@ async function fetchRecent(userId, offset = 0) {
 
     if (goalIds.length > 0) {
 
-        const { data: goalData, error: goalError } = await sb
+        const {
+            data: goalData,
+            error: goalError
+        } = await sb
             .from("goals")
             .select("id, name")
             .in("id", goalIds);
@@ -619,16 +761,27 @@ async function fetchRecent(userId, offset = 0) {
     // ============================================
     // 4. Convert normal transactions
     // ============================================
+
     const transactionRows = (transactions || []).map(row => ({
+
         ...row,
+
         activity_type: "transaction",
-        activity_date: row.transaction_date
+
+        // Main sorting value
+        activity_date: row.transaction_date,
+
+        // Exact creation time
+        activity_created_at:
+            row.created_at || row.transaction_date
+
     }));
 
 
     // ============================================
     // 5. Convert goal contributions
     // ============================================
+
     const contributionRows = (contributions || []).map(row => {
 
         const goal = goals.find(
@@ -636,19 +789,33 @@ async function fetchRecent(userId, offset = 0) {
         );
 
         return {
+
             ...row,
+
             activity_type: "goal_contribution",
+
             transaction_type: "goal_contribution",
+
             activity_date: row.contribution_date,
-            goal_name: goal?.name || "Unknown Goal",
+
+            // Exact creation time
+            activity_created_at:
+                row.created_at || row.contribution_date,
+
+            goal_name:
+                goal?.name || "Unknown Goal",
+
             categories: null
+
         };
+
     });
 
 
     // ============================================
     // 6. Combine both
     // ============================================
+
     const allRows = [
         ...transactionRows,
         ...contributionRows
@@ -656,23 +823,67 @@ async function fetchRecent(userId, offset = 0) {
 
 
     // ============================================
-    // 7. Sort newest first
+    // 7. SORT NEWEST FIRST
+    //
+    // First priority:
+    //     created_at
+    //
+    // Second priority:
+    //     transaction/contribution date
+    //
+    // Third priority:
+    //     id
+    //
+    // This keeps the newest activity at the top.
     // ============================================
+
     allRows.sort((a, b) => {
 
+        const createdA =
+            new Date(a.activity_created_at).getTime();
+
+        const createdB =
+            new Date(b.activity_created_at).getTime();
+
+        // 1. Exact creation time
+        if (
+            Number.isFinite(createdA) &&
+            Number.isFinite(createdB) &&
+            createdA !== createdB
+        ) {
+            return createdB - createdA;
+        }
+
+
+        // 2. Transaction / contribution date
         const dateA =
             new Date(a.activity_date).getTime();
 
         const dateB =
             new Date(b.activity_date).getTime();
 
-        return dateB - dateA;
+        if (
+            Number.isFinite(dateA) &&
+            Number.isFinite(dateB) &&
+            dateA !== dateB
+        ) {
+            return dateB - dateA;
+        }
+
+
+        // 3. Final fallback
+        const idA = Number(a.id || 0);
+        const idB = Number(b.id || 0);
+
+        return idB - idA;
+
     });
 
 
     // ============================================
     // 8. Pagination
     // ============================================
+
     const result = allRows.slice(
         offset,
         offset + recentState.pageSize + 1
@@ -684,15 +895,16 @@ async function fetchRecent(userId, offset = 0) {
 
 
     return {
+
         rows: result.slice(
             0,
             recentState.pageSize
         ),
+
         hasMore
+
     };
 }
-
-
 function amountFor(rows, type) {
     return rows
         .filter(x => x.transaction_type === type)
