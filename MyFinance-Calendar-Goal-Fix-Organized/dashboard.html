@@ -73,7 +73,23 @@
       <div class="panel"><div class="section-heading"><div><h2>Quick Access</h2><p>Common money tasks.</p></div></div><div class="quick-links-grid"><a class="quick-link-card" href="categories.html"><div><strong>Manage categories</strong><br><span>Create your own categories</span></div><span>→</span></a><a class="quick-link-card" href="vehicles.html"><div><strong>Manage vehicles</strong><br><span>Track vehicle expenses separately</span></div><span>→</span></a><a class="quick-link-card" href="reports.html"><div><strong>View reports</strong><br><span>Review trends and spending</span></div><span>→</span></a><a class="quick-link-card" href="analytics.html"><div><strong>Open analytics</strong><br><span>See charts and spending patterns</span></div><span>→</span></a><a class="quick-link-card" href="calendar.html"><div><strong>Open calendar</strong><br><span>See daily income and spending</span></div><span>→</span></a><a class="quick-link-card" href="why-50-30-20.html"><div><strong>Learn 50/30/20</strong><br><span>Understand the budgeting guide</span></div><span>→</span></a></div></div>
     </section>
   </main>
-  <button id="floatingDashboardAdd" class="floating-transaction-add dashboard-floating-add" type="button" aria-label="Add transaction" title="Add transaction">+</button>
+ <div id="floatingDashboardAddHint" class="floating-add-hint hidden">
+    <span class="floating-add-hint-arrow">↗</span>
+    <div>
+        <strong>Move this button</strong>
+        <small>Drag and place it anywhere you want</small>
+    </div>
+</div>
+
+<button
+    id="floatingDashboardAdd"
+    class="floating-transaction-add dashboard-floating-add"
+    type="button"
+    aria-label="Add transaction"
+    title="Add transaction"
+>
+    +
+</button>
 
   <div id="previousBalanceModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="previousBalanceTitle">
     <div class="modal previous-balance-modal-card">
