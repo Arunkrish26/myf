@@ -156,7 +156,161 @@ html[data-theme="dark"]{
 .floating-transaction-add{position:fixed;right:22px;bottom:22px;z-index:180;width:56px;height:56px;border:0;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:#fff;box-shadow:0 12px 30px rgba(8,166,122,.28);font-size:30px;font-weight:500;line-height:1;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}
 .floating-transaction-add:hover{transform:translateY(-2px);background:var(--primary-dark);box-shadow:0 16px 34px rgba(8,166,122,.34)}
 .floating-transaction-add:focus-visible{outline:3px solid color-mix(in srgb,var(--primary) 35%,transparent);outline-offset:3px}
+/* =========================================================
+   Draggable Dashboard Add Button
+   ========================================================= */
 
+.floating-transaction-add{
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  cursor:grab;
+}
+
+.floating-transaction-add.dragging{
+  cursor:grabbing;
+  transform:scale(1.08);
+  box-shadow:0 18px 40px rgba(8,166,122,.40);
+  transition:none;
+}
+
+.floating-transaction-add.drag-hint{
+  animation:floatingAddPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes floatingAddPulse{
+  0%,100%{
+    transform:scale(1);
+    box-shadow:0 12px 30px rgba(8,166,122,.28);
+  }
+
+  50%{
+    transform:scale(1.12);
+    box-shadow:
+      0 0 0 10px rgba(8,166,122,.10),
+      0 18px 40px rgba(8,166,122,.38);
+  }
+}
+
+
+/* First-time instruction bubble */
+
+.floating-add-hint{
+  position:fixed;
+  z-index:190;
+  right:90px;
+  bottom:28px;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  padding:12px 15px;
+
+  background:var(--surface);
+  color:var(--text);
+
+  border:1px solid var(--border);
+  border-radius:14px;
+
+  box-shadow:0 12px 35px rgba(0,0,0,.15);
+
+  pointer-events:none;
+
+  animation:floatingHintIn .45s ease-out;
+}
+
+.floating-add-hint strong{
+  display:block;
+  font-size:13px;
+  font-weight:800;
+}
+
+.floating-add-hint small{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.floating-add-hint-arrow{
+  display:grid;
+  place-items:center;
+
+  width:30px;
+  height:30px;
+
+  border-radius:50%;
+
+  background:var(--primary);
+  color:#fff;
+
+  font-size:18px;
+  font-weight:800;
+
+  animation:floatingArrowMove 1s ease-in-out infinite;
+}
+
+@keyframes floatingHintIn{
+  from{
+    opacity:0;
+    transform:translateX(15px) scale(.95);
+  }
+
+  to{
+    opacity:1;
+    transform:translateX(0) scale(1);
+  }
+}
+
+@keyframes floatingArrowMove{
+  0%,100%{
+    transform:translate(0,0);
+  }
+
+  50%{
+    transform:translate(5px,-5px);
+  }
+}
+
+
+/* Small fade-out when first-time hint is dismissed */
+
+.floating-add-hint.hiding{
+  animation:floatingHintOut .3s ease forwards;
+}
+
+@keyframes floatingHintOut{
+  from{
+    opacity:1;
+    transform:translateX(0);
+  }
+
+  to{
+    opacity:0;
+    transform:translateX(10px);
+  }
+}
+
+
+@media(max-width:640px){
+
+  .floating-add-hint{
+    right:82px;
+    bottom:24px;
+    max-width:220px;
+  }
+
+  .floating-add-hint strong{
+    font-size:12px;
+  }
+
+  .floating-add-hint small{
+    font-size:10px;
+  }
+
+}
 @media(max-width:640px){
   .floating-transaction-add{right:16px;bottom:16px;width:54px;height:54px;font-size:29px}
 }
