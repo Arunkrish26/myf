@@ -1763,7 +1763,7 @@ setupTheme();
 
 setupProfileMenu();
 
-
+/*
 document
     .getElementById(
         "floatingDashboardAdd"
@@ -1777,7 +1777,500 @@ document
                 );
         }
     );
+    */
+/* =========================================================
+   DRAGGABLE DASHBOARD ADD BUTTON
+   ========================================================= */
 
+const floatingDashboardAdd =
+    document.getElementById("floatingDashboardAdd");
+
+const floatingDashboardAddHint =
+    document.getElementById("floatingDashboardAddHint");
+
+if (floatingDashboardAdd) {
+
+    const STORAGE_KEY =
+        "myfinance-floating-add-position";
+
+    const HINT_KEY =
+        "myfinance-floating-add-hint-seen";
+
+    let isDragging = false;
+    let hasMoved = false;
+
+    let startPointerX = 0;
+    let startPointerY = 0;
+
+    let startLeft = 0;
+    let startTop = 0;
+
+    let currentLeft = 0;
+    let currentTop = 0;
+
+
+    /* ---------------------------------------------------------
+       Load saved position
+       --------------------------------------------------------- */
+
+    function loadFloatingButtonPosition() {
+
+        try {
+
+            const saved =
+                localStorage.getItem(STORAGE_KEY);
+
+            if (!saved) {
+                return;
+            }
+
+            const position =
+                JSON.parse(saved);
+
+            if (
+                typeof position.left !== "number" ||
+                typeof position.top !== "number"
+            ) {
+                return;
+            }
+
+            const buttonRect =
+                floatingDashboardAdd.getBoundingClientRect();
+
+            const maxLeft =
+                window.innerWidth - buttonRect.width;
+
+            const maxTop =
+                window.innerHeight - buttonRect.height;
+
+            currentLeft =
+                Math.max(
+                    0,
+                    Math.min(position.left, maxLeft)
+                );
+
+            currentTop =
+                Math.max(
+                    0,
+                    Math.min(position.top, maxTop)
+                );
+
+            floatingDashboardAdd.style.left =
+                `${currentLeft}px`;
+
+            floatingDashboardAdd.style.top =
+                `${currentTop}px`;
+
+            floatingDashboardAdd.style.right =
+                "auto";
+
+            floatingDashboardAdd.style.bottom =
+                "auto";
+
+        } catch (error) {
+
+            console.warn(
+                "Could not load floating button position.",
+                error
+            );
+
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       Save position
+       --------------------------------------------------------- */
+
+    function saveFloatingButtonPosition() {
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+                left: currentLeft,
+                top: currentTop
+            })
+        );
+    }
+
+
+    /* ---------------------------------------------------------
+       First-time hint
+       --------------------------------------------------------- */
+
+    function showFirstTimeHint() {
+
+        const alreadySeen =
+            localStorage.getItem(HINT_KEY);
+
+        if (alreadySeen) {
+            return;
+        }
+
+        floatingDashboardAdd.classList.add(
+            "drag-hint"
+        );
+
+        if (floatingDashboardAddHint) {
+
+            floatingDashboardAddHint.classList.remove(
+                "hidden"
+            );
+
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       Hide first-time hint permanently
+       --------------------------------------------------------- */
+
+    function hideFirstTimeHint() {
+
+        localStorage.setItem(
+            HINT_KEY,
+            "true"
+        );
+
+        floatingDashboardAdd.classList.remove(
+            "drag-hint"
+        );
+
+        if (floatingDashboardAddHint) {
+
+            floatingDashboardAddHint.classList.add(
+                "hiding"
+            );
+
+            setTimeout(() => {
+
+                floatingDashboardAddHint.classList.add(
+                    "hidden"
+                );
+
+                floatingDashboardAddHint.classList.remove(
+                    "hiding"
+                );
+
+            }, 300);
+
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       Start dragging
+       --------------------------------------------------------- */
+
+    floatingDashboardAdd.addEventListener(
+        "pointerdown",
+        event => {
+
+            isDragging = true;
+            hasMoved = false;
+
+            floatingDashboardAdd.classList.add(
+                "dragging"
+            );
+
+            startPointerX =
+                event.clientX;
+
+            startPointerY =
+                event.clientY;
+
+            const rect =
+                floatingDashboardAdd.getBoundingClientRect();
+
+            startLeft =
+                rect.left;
+
+            startTop =
+                rect.top;
+
+            currentLeft =
+                startLeft;
+
+            currentTop =
+                startTop;
+
+            floatingDashboardAdd.setPointerCapture(
+                event.pointerId
+            );
+
+            event.preventDefault();
+        }
+    );
+
+
+    /* ---------------------------------------------------------
+       Dragging
+       --------------------------------------------------------- */
+
+    floatingDashboardAdd.addEventListener(
+        "pointermove",
+        event => {
+
+            if (!isDragging) {
+                return;
+            }
+
+            const deltaX =
+                event.clientX -
+                startPointerX;
+
+            const deltaY =
+                event.clientY -
+                startPointerY;
+
+
+            /*
+             * Small movement = normal click.
+             * Bigger movement = actual drag.
+             */
+
+            if (
+                Math.abs(deltaX) > 5 ||
+                Math.abs(deltaY) > 5
+            ) {
+
+                hasMoved = true;
+
+            }
+
+
+            if (!hasMoved) {
+                return;
+            }
+
+
+            const buttonRect =
+                floatingDashboardAdd.getBoundingClientRect();
+
+
+            let newLeft =
+                startLeft + deltaX;
+
+            let newTop =
+                startTop + deltaY;
+
+
+            /* Keep button inside screen */
+
+            const maxLeft =
+                window.innerWidth -
+                buttonRect.width;
+
+            const maxTop =
+                window.innerHeight -
+                buttonRect.height;
+
+
+            newLeft =
+                Math.max(
+                    0,
+                    Math.min(newLeft, maxLeft)
+                );
+
+            newTop =
+                Math.max(
+                    0,
+                    Math.min(newTop, maxTop)
+                );
+
+
+            currentLeft =
+                newLeft;
+
+            currentTop =
+                newTop;
+
+
+            floatingDashboardAdd.style.left =
+                `${newLeft}px`;
+
+            floatingDashboardAdd.style.top =
+                `${newTop}px`;
+
+            floatingDashboardAdd.style.right =
+                "auto";
+
+            floatingDashboardAdd.style.bottom =
+                "auto";
+
+
+            event.preventDefault();
+        }
+    );
+
+
+    /* ---------------------------------------------------------
+       Stop dragging
+       --------------------------------------------------------- */
+
+    floatingDashboardAdd.addEventListener(
+        "pointerup",
+        event => {
+
+            if (!isDragging) {
+                return;
+            }
+
+            isDragging = false;
+
+            floatingDashboardAdd.classList.remove(
+                "dragging"
+            );
+
+
+            if (hasMoved) {
+
+                saveFloatingButtonPosition();
+
+                hideFirstTimeHint();
+
+            }
+
+
+            try {
+
+                floatingDashboardAdd.releasePointerCapture(
+                    event.pointerId
+                );
+
+            } catch (error) {
+
+                // Pointer capture may already be released.
+
+            }
+        }
+    );
+
+
+    /* ---------------------------------------------------------
+       Cancel dragging
+       --------------------------------------------------------- */
+
+    floatingDashboardAdd.addEventListener(
+        "pointercancel",
+        event => {
+
+            isDragging = false;
+
+            floatingDashboardAdd.classList.remove(
+                "dragging"
+            );
+
+        }
+    );
+
+
+    /* ---------------------------------------------------------
+       Normal click
+       --------------------------------------------------------- */
+
+    floatingDashboardAdd.addEventListener(
+        "click",
+        event => {
+
+            /*
+             * If the user dragged the button,
+             * don't open transactions.html.
+             */
+
+            if (hasMoved) {
+
+                hasMoved = false;
+
+                event.preventDefault();
+
+                return;
+
+            }
+
+
+            /*
+             * Normal click behavior remains
+             * exactly the same.
+             */
+
+            window.location.href =
+                appUrl(
+                    "transactions.html"
+                );
+
+        }
+    );
+
+
+    /* ---------------------------------------------------------
+       Keep button inside screen after resize
+       --------------------------------------------------------- */
+
+    window.addEventListener(
+        "resize",
+        () => {
+
+            const rect =
+                floatingDashboardAdd.getBoundingClientRect();
+
+            const maxLeft =
+                window.innerWidth -
+                rect.width;
+
+            const maxTop =
+                window.innerHeight -
+                rect.height;
+
+
+            if (
+                rect.left > maxLeft ||
+                rect.top > maxTop
+            ) {
+
+                currentLeft =
+                    Math.max(
+                        0,
+                        Math.min(rect.left, maxLeft)
+                    );
+
+                currentTop =
+                    Math.max(
+                        0,
+                        Math.min(rect.top, maxTop)
+                    );
+
+
+                floatingDashboardAdd.style.left =
+                    `${currentLeft}px`;
+
+                floatingDashboardAdd.style.top =
+                    `${currentTop}px`;
+
+                floatingDashboardAdd.style.right =
+                    "auto";
+
+                floatingDashboardAdd.style.bottom =
+                    "auto";
+
+
+                saveFloatingButtonPosition();
+
+            }
+
+        }
+    );
+
+
+    /* ---------------------------------------------------------
+       Initialize
+       --------------------------------------------------------- */
+
+    loadFloatingButtonPosition();
+
+    showFirstTimeHint();
+
+}
 
 /* =========================================================
    LOAD MORE BUTTON
